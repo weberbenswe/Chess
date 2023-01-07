@@ -37,7 +37,7 @@ public class ChessBoard {
         for(Square square : squares){
             if(square.occupied){
                 continue;
-            }sssss
+            }ssssss
 
             // Placing the white pieces
             if(square.y == 0){
