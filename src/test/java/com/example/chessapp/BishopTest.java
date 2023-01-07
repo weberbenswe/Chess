@@ -8,7 +8,7 @@ class BishopTest {
 
     @Test
     void createBishopTest(){
-        Bishop bishop = new Bishop("black", 1, 1);
+        Bishop bishop = new Bishop("black", 1, 1, 2);
         bishop.type = "Queen";
 
         assertNotNull(bishop);

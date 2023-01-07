@@ -8,7 +8,7 @@ class KingTest {
 
     @Test
     void createKingTest(){
-        King king = new King("White", 1, 1);
+        King king = new King("White", 1, 1, 2);
 
         assertNotNull(king);
         assertEquals(king.type, "King");

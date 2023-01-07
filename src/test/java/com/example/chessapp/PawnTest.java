@@ -8,7 +8,7 @@ class PawnTest {
 
     @Test
     void createPawnTest(){
-        Pawn pawn = new Pawn("White", 1, 1);
+        Pawn pawn = new Pawn("White", 1, 1, 2);
 
         assertNotNull(pawn);
         assertEquals(pawn.type, "Pawn");

@@ -8,7 +8,7 @@ class QueenTest {
 
     @Test
     void createQueenTest(){
-        Queen queen = new Queen("White", 1, 1);
+        Queen queen = new Queen("White", 1, 1, 2);
 
         assertNotNull(queen);
         assertEquals(queen.type, "Queen");

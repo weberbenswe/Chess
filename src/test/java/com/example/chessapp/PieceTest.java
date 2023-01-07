@@ -8,7 +8,7 @@ class PieceTest {
 
     @Test
     void createPieceTest(){
-        Piece piece = new Piece("White", 1, 1);
+        Piece piece = new Piece("White", 1, 1,2);
         piece.type = "Rook";
 
         assertNotNull(piece);

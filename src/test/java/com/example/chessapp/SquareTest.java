@@ -8,16 +8,16 @@ class SquareTest {
 
     @Test
     void createSquare(){
-        Square square = new Square(1, 1);
+        Square square = new Square(1, 1, 2);
 
         assertNotNull(square);
         assertEquals(square.occupied, false);
     }
     @Test
     void setName() {
-        Square square = new Square(1, 1);
-        square.setName("Test");
+        Square square = new Square(1, 1, 2);
+        int name = square.getName();
 
-        assertEquals(square.name, "Test");
+        assertEquals(name, 2);
     }
 }

@@ -8,7 +8,7 @@ class RookTest {
 
     @Test
     void createRookTest(){
-        Rook rook = new Rook("White", 1, 1);
+        Rook rook = new Rook("White", 1, 1, 2);
 
         assertNotNull(rook);
         assertEquals(rook.type, "Rook");

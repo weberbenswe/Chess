@@ -8,7 +8,7 @@ class KnightTest {
 
     @Test
     void createKnightTest(){
-        Knight knight = new Knight("white", 2, 1);
+        Knight knight = new Knight("white", 2, 1, 2);
         knight.type = "Queen";
         knight.type = "Knight";
 
