@@ -52,7 +52,7 @@ public class Piece extends ImageView {
         });
 
         this.setOnMouseDragged(mouseEvent -> {
-            getPossibleMoves();ss
+            getPossibleMoves();s
             highlightMoves(possibleMoves);
             this.setTranslateX(mouseEvent.getSceneX() - startDragX);
             this.setTranslateY(mouseEvent.getSceneY() - startDragY);
