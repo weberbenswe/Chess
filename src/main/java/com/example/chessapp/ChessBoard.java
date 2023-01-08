@@ -84,8 +84,10 @@ public class ChessBoard {
 
         if ((x + y) % 2 == 0) {
             square.setBackground(new Background(new BackgroundFill(white, null, null)));
+            square.backgroundColor = WHITE;
         } else {
             square.setBackground(new Background(new BackgroundFill(black, null, null)));
+            square.backgroundColor = BLACK;
         }
     }
 

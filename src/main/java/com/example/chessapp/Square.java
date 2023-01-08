@@ -6,6 +6,7 @@ public class Square extends StackPane {
     int x, y;
     boolean occupied;
     private int name;
+    String backgroundColor;
 
     public Square(int x, int y, int name) {
         this.x = x;
