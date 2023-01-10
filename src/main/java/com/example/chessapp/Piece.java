@@ -80,7 +80,7 @@ public class Piece extends ImageView {
 
     public void highlightMoves(HashSet<Integer> possibleMoves){
         Color highlightColor = Color.rgb(144, 238, 144);
-        highLightedSquares = new ArrayList<>();
+        highLightedSquares = new ArrayList<>();s
         if(possibleMoves.isEmpty()){ssss
             return;s
         }
