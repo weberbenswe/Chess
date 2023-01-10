@@ -1,7 +1,11 @@
 package com.example.chessapp;
 
 import java.util.ArrayList;
+import java.util.EventObject;
 
+import javafx.geometry.Point3D;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.PickResult;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -10,6 +14,7 @@ public class ChessBoard {
     public static final String BLACK = "black";
     private static final ArrayList<Square> squares = new ArrayList<>();
     private int[][] matrix;
+    public static boolean movingPiece = false;
     GridPane chessBoard;
 
     public ChessBoard(GridPane chessBoard) {
@@ -33,8 +38,6 @@ public class ChessBoard {
         }
         addPieces();
     }
-
-
 
     private void addPieces(){
         //loop through squares assigning each square a piece
@@ -106,6 +109,21 @@ public class ChessBoard {
                 {48, 49, 50, 51, 52, 53, 54, 55},
                 {56, 57, 58, 59, 60, 61, 62, 63}
         };
+    }
+
+    public static Square findSquare(MouseEvent eventObject){
+        double x = eventObject.getSceneX();
+        double y = eventObject.getSceneY();
+        Point3D pickResult = eventObject.getPickResult().getIntersectedPoint();
+        System.out.println("X: " + x + " Y: " + y + " W: " + squares.get(0).getWidth() + " H: " + squares.get(0).getHeight() + " " + pickResult);
+
+        for(Square square : squares){
+            if(square.intersects(x, y, square.getWidth(), square.getHeight())){
+                //System.out.println("here");
+            }
+        }
+        movingPiece = !movingPiece;
+        return null;
     }
 }
 

@@ -1,23 +1,26 @@
 package com.example.chessapp;
 
+import javafx.scene.Node;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.PickResult;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 import java.util.*;
 
+// TODO: 1. add functionality to move piece to new location
+
 public class Piece extends ImageView {
-    boolean successfulMove= false;
     String color, type;
     int x, y, position;
-    double startDragX, startDragY;
-    double startPosX, startPosY;
+    double startDragX, startDragY, startPosX, startPosY, currX, currY;
     HashSet<Integer> possibleMoves;
     ArrayList<Square> squares = ChessBoard.getSquares();
     ArrayList<Square> highLightedSquares;
+    Image image;
 
 
 
@@ -34,49 +37,46 @@ public class Piece extends ImageView {
         return this.position;
     }
 
-    public void setPiece(Image image){
+    public Image setPiece(Image image){
         this.setImage(image);
+        return image;
     }
 
     public void setImage(){
         String resourceStream = "/images/" + "" + this.color + "" + this.type + "" + ".png";
-        this.setPiece(new Image(Objects.requireNonNull(App.class.getResourceAsStream(resourceStream))));
+        this.image = this.setPiece(new Image(Objects.requireNonNull(App.class.getResourceAsStream(resourceStream))));
     }
 
     public void pieceInteraction(){
         // Selecting Piece
         this.setOnMousePressed(mouseEvent -> {
-            this.getParent().setViewOrder(-1);
-            System.out.println("Piece: X: " + this.x + " Y: " + this.y + " Type: " + this.type + " Position: " + this.position);
-            getPossibleMoves();
-            highlightMoves(possibleMoves);
-            System.out.println("Possible Moves: " + possibleMoves);
+            this.setMouseTransparent(true);
             startDragX = mouseEvent.getSceneX();
             startDragY = mouseEvent.getSceneY();
+            this.getParent().setViewOrder(-1);
+            getPossibleMoves();
+            highlightMoves(possibleMoves);
+            mouseEvent.consume();
         });
 
         // Moving Piece
         this.setOnMouseDragged(mouseEvent -> {
-            getPossibleMoves();
-            highlightMoves(possibleMoves);
             this.setTranslateX(mouseEvent.getSceneX() - startDragX);
             this.setTranslateY(mouseEvent.getSceneY() - startDragY);
         });
 
-        // Releasing piece
         this.setOnMouseReleased(mouseEvent -> {
-            resetSquares();
-            this.toFront();
-            if(!successfulMove){
-                this.setTranslateX(startPosX);
-                this.setTranslateY(startPosY);
-            }
+            ChessBoard.movingPiece = true;
+            Square square = ChessBoard.findSquare(mouseEvent);
+            this.resetSquares();
+            this.setTranslateX(startPosX);
+            this.setTranslateY(startPosY);
+            this.setMouseTransparent(false);
+            mouseEvent.consume();
         });
     }
 
-    public void getPossibleMoves() {
-        highlightMoves(possibleMoves);
-    }
+    public void getPossibleMoves() {}
 
     public void highlightMoves(HashSet<Integer> possibleMoves){
         Color highlightColor = Color.rgb(144, 238, 144);
@@ -106,5 +106,18 @@ public class Piece extends ImageView {
             }
             square.setEffect(null);
         }
+    }
+
+    public boolean checkSuccessfulMove(){
+        //PickResult pickResult = mouseEvent.getPickResult();
+        //Node node = pickResult.getIntersectedNode().getParent();
+        //Square square = (Square) node;
+        //System.out.println(square.getName());
+
+
+        return false;
+        // Check square on release
+        // set coords of piece to new square
+
     }
 }

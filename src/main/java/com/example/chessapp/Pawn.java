@@ -1,6 +1,5 @@
 package com.example.chessapp;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Pawn extends Piece{
