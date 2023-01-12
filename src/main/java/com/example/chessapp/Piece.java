@@ -4,20 +4,20 @@ import javafx.scene.Node;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.PickResult;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 
 import java.util.*;
 
-// TODO: 1. add functionality to move piece to new location
-
 public class Piece extends ImageView {
     String color, type;
     int x, y, position;
-    double startDragX, startDragY, startPosX, startPosY, currX, currY;
+    boolean hasMoved;
+    double startDragX, startDragY, currX, currY;
+    public int direction;
     HashSet<Integer> possibleMoves;
+    HashMap<Integer, Square> squaresMap = ChessBoard.getSquaresMap();
     ArrayList<Square> squares = ChessBoard.getSquares();
     ArrayList<Square> highLightedSquares;
     Image image;
@@ -29,7 +29,9 @@ public class Piece extends ImageView {
         this.x = x;
         this.y = y;
         this.position = startPos;
+        this.hasMoved = false;
         this.possibleMoves = new HashSet<>();
+        this.direction = Objects.equals(this.color, "white") ? 1 : -1;
         this.pieceInteraction();
     }
 
@@ -54,29 +56,80 @@ public class Piece extends ImageView {
             startDragX = mouseEvent.getSceneX();
             startDragY = mouseEvent.getSceneY();
             this.getParent().setViewOrder(-1);
-            getPossibleMoves();
+            moves();
+            System.out.println("Piece: " + this.type + " Moved?: " + this.hasMoved + " Position: " + this.position);
+            System.out.println("Possible moves: " + this.possibleMoves);
             highlightMoves(possibleMoves);
             mouseEvent.consume();
         });
 
         // Moving Piece
         this.setOnMouseDragged(mouseEvent -> {
-            this.setTranslateX(mouseEvent.getSceneX() - startDragX);
-            this.setTranslateY(mouseEvent.getSceneY() - startDragY);
+            this.currX = mouseEvent.getSceneX() - startDragX;
+            this.currY = mouseEvent.getSceneY() - startDragY;
+            this.relocate(currX, currY);
+            startDragX = mouseEvent.getSceneX();
+            startDragY = mouseEvent.getSceneY();
+            mouseEvent.consume();
         });
 
         this.setOnMouseReleased(mouseEvent -> {
-            ChessBoard.movingPiece = true;
-            Square square = ChessBoard.findSquare(mouseEvent);
-            this.resetSquares();
-            this.setTranslateX(startPosX);
-            this.setTranslateY(startPosY);
+            Node node = mouseEvent.getPickResult().getIntersectedNode();
+            boolean isSuccessfulMove = checkSuccessfulMove(node);
+            if(isSuccessfulMove){
+                this.hasMoved = true;
+                this.resetSquares();
+            } else {
+                this.resetSquares();
+            }
             this.setMouseTransparent(false);
+            this.possibleMoves = new HashSet<>();
             mouseEvent.consume();
         });
     }
 
+    public void moves(){
+        //TODO: should not go off edge of board
+        getPossibleMoves();
+    }
+
     public void getPossibleMoves() {}
+
+    public boolean checkSuccessfulMove(Node node){
+        if(!(node instanceof Square)){
+            return false;
+        }
+        Square targetSquare = (Square) node;
+        Square prevSquare = (Square) this.getParent();
+        int target = targetSquare.getName();
+
+        for(int move : possibleMoves) {
+            // TODO: Only job here is to move square if it's in the list of successful moves
+            if (target == move){
+
+                //Prep target square
+                if(targetSquare.occupied) {
+                    targetSquare.getChildren().clear();
+                    targetSquare.occupied = false;
+                }
+
+                //Move in here
+                targetSquare.getChildren().add(this);
+                targetSquare.occupied = true;
+                this.x = targetSquare.x;
+                this.y = targetSquare.y;
+                this.position = target;
+
+                //Update prev square
+                prevSquare.occupied = false;
+                prevSquare.getChildren().clear();
+
+                this.hasMoved = true;
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void highlightMoves(HashSet<Integer> possibleMoves){
         Color highlightColor = Color.rgb(144, 238, 144);
@@ -106,18 +159,5 @@ public class Piece extends ImageView {
             }
             square.setEffect(null);
         }
-    }
-
-    public boolean checkSuccessfulMove(){
-        //PickResult pickResult = mouseEvent.getPickResult();
-        //Node node = pickResult.getIntersectedNode().getParent();
-        //Square square = (Square) node;
-        //System.out.println(square.getName());
-
-
-        return false;
-        // Check square on release
-        // set coords of piece to new square
-
     }
 }

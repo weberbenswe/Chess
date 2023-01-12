@@ -2,6 +2,7 @@ package com.example.chessapp;
 
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.HashMap;
 
 import javafx.geometry.Point3D;
 import javafx.scene.input.MouseEvent;
@@ -13,8 +14,8 @@ public class ChessBoard {
     public static final String WHITE = "white";
     public static final String BLACK = "black";
     private static final ArrayList<Square> squares = new ArrayList<>();
+    private static final HashMap<Integer, Square> squaresMap = new HashMap<>();
     private int[][] matrix;
-    public static boolean movingPiece = false;
     GridPane chessBoard;
 
     public ChessBoard(GridPane chessBoard) {
@@ -34,6 +35,7 @@ public class ChessBoard {
                 setColor(square, j, i);
                 chessBoard.add(square, i, j);
                 squares.add(square);
+                squaresMap.put(square.getName(), square);
             }
         }
         addPieces();
@@ -98,6 +100,10 @@ public class ChessBoard {
         return squares;
     }
 
+    public static HashMap<Integer, Square> getSquaresMap(){
+        return squaresMap;
+    }
+
     private void loadMatrix(){
         this.matrix = new int[][]{
                 {0, 1, 2, 3, 4, 5, 6, 7},
@@ -109,21 +115,6 @@ public class ChessBoard {
                 {48, 49, 50, 51, 52, 53, 54, 55},
                 {56, 57, 58, 59, 60, 61, 62, 63}
         };
-    }
-
-    public static Square findSquare(MouseEvent eventObject){
-        double x = eventObject.getSceneX();
-        double y = eventObject.getSceneY();
-        Point3D pickResult = eventObject.getPickResult().getIntersectedPoint();
-        System.out.println("X: " + x + " Y: " + y + " W: " + squares.get(0).getWidth() + " H: " + squares.get(0).getHeight() + " " + pickResult);
-
-        for(Square square : squares){
-            if(square.intersects(x, y, square.getWidth(), square.getHeight())){
-                //System.out.println("here");
-            }
-        }
-        movingPiece = !movingPiece;
-        return null;
     }
 }
 
