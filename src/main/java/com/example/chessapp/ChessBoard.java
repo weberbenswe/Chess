@@ -10,11 +10,14 @@ import javafx.scene.input.PickResult;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+/**
+* Runs logic with chessboard and adds pieces to board
+* */
 public class ChessBoard {
     public static final String WHITE = "white";
     public static final String BLACK = "black";
     private static final ArrayList<Square> squares = new ArrayList<>();
-    private static final HashMap<Integer, Square> squaresMap = new HashMap<>();
+    private static final HashMap<Coordinate, Square> squaresMap = new HashMap<>();
     private int[][] matrix;
     GridPane chessBoard;
 
@@ -23,6 +26,9 @@ public class ChessBoard {
         makeBoard(this.chessBoard);
     }
 
+    /**
+     * Build Chessboard
+     * */
     private void makeBoard(GridPane chessBoard) {
         loadMatrix();
         for (int i=0; i<matrix[0].length; i++) {
@@ -35,14 +41,16 @@ public class ChessBoard {
                 setColor(square, j, i);
                 chessBoard.add(square, i, j);
                 squares.add(square);
-                squaresMap.put(square.getName(), square);
+                squaresMap.put(square.coordinate, square);
             }
         }
         addPieces();
     }
 
+    /**
+     * Add pieces to chess board
+     * */
     private void addPieces(){
-        //loop through squares assigning each square a piece
         for(Square square : squares){
             if(square.occupied){
                 continue;
@@ -78,11 +86,17 @@ public class ChessBoard {
         }
     }
 
+    /**
+     * Sets square as parent of piece for later movement
+     * */
     private void addPiece(Square square, Piece piece) {
         square.getChildren().add(piece);
         square.occupied = true;
     }
 
+    /**
+     * Sets the squares color in matching with chess board
+     * */
     private void setColor(Square square, int x, int y) {
         Color black = Color.rgb(100, 85, 85);
         Color white = Color.rgb(255, 255, 255);
@@ -100,7 +114,7 @@ public class ChessBoard {
         return squares;
     }
 
-    public static HashMap<Integer, Square> getSquaresMap(){
+    public static HashMap<Coordinate, Square> getSquaresMap(){
         return squaresMap;
     }
 
@@ -117,4 +131,3 @@ public class ChessBoard {
         };
     }
 }
-

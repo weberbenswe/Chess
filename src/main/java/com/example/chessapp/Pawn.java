@@ -12,49 +12,48 @@ public class Pawn extends Piece{
 
     @Override
     public void getPossibleMoves(){
-        int moveOne = position+8*direction;
-        int moveTwo = position+16*direction;
-        int diagonalLeft = position+7*direction;
-        int diagonalRight = position+9*direction;
+        Coordinate currLocation = new Coordinate(x, y);
 
-        for(Square square : squares) {
-            int target = square.getName();
-            boolean targetLeftEdge = target % 8 == 0 && position % 7 == 0;
-            boolean targetRightEdge = target % 7 == 0 && position % 8 == 0;
-            boolean targetTopEdge = target < 8 && target > -1;
-            boolean targetBottomEdge = target < 64 && target > 55;
-            boolean occupied = square.occupied;
-            boolean pathClear = pathClear(moveOne);
+        Coordinate upOne = new Coordinate(x, y+ 1*direction);
+        boolean upOneCheck = false;
+        if(upOne.isInBounds()){
+            Square square = squaresMap.get(upOne);
+            if(!square.occupied){
+                possibleMoves.add(square.getName());
+                upOneCheck = true;
+            }
+        }
 
-            // Prevent falling OOB
-            if (targetLeftEdge || targetRightEdge || targetTopEdge || targetBottomEdge) {
-                continue;
+        Coordinate upTwo = new Coordinate(x, y+ 2*direction);
+        if(upTwo.isInBounds()){
+            Square square = squaresMap.get(upTwo);
+            if(!square.occupied && upOneCheck && !this.hasMoved){
+                possibleMoves.add(square.getName());
             }
-            // Move forward
-            if(!occupied){
-                if(target == moveOne || (!hasMoved && pathClear && target == moveTwo)){
-                    this.possibleMoves.add(target);
-                }
+        }
+
+        Coordinate diagLeft = new Coordinate(x+1*direction, y+ 1*direction);
+        if(diagLeft.isInBounds()){
+            Square square = squaresMap.get(diagLeft);
+            if(diagCapture(square)){
+                possibleMoves.add(square.getName());
             }
-            // Capture
-            if (occupied) {
-                boolean notSameColor = checkColor(square);
-                if (notSameColor && (target == diagonalLeft || target == diagonalRight)) {
-                    this.possibleMoves.add(target);
-                }
+        }
+
+        Coordinate diagRight = new Coordinate(x-1*direction, y+ 1*direction);
+        if(diagRight.isInBounds()){
+            Square square = squaresMap.get(diagRight);
+            if(diagCapture(square)){
+                possibleMoves.add(square.getName());
             }
         }
     }
 
-    private boolean pathClear(int moveOne) {
-        Square pathSquare = squaresMap.get(moveOne);
-        return !pathSquare.occupied;
-    }
-
-    private boolean checkColor(Square square){
-        Piece targetPiece = (Piece) square.getChildren().get(0);
-        String color = targetPiece.color;
-
-        return !Objects.equals(color, this.color);
+    private boolean diagCapture(Square square){
+        if(square.occupied){
+            String color = ((Piece) square.getChildren().get(0)).color;
+            return !Objects.equals(color, this.color);
+        }
+        return false;
     }
 }

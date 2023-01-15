@@ -10,35 +10,35 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
+/**
+ * Acts as super for all piece types controlling similar logic like movement, capturing, and image setting
+ * */
 public class Piece extends ImageView {
+    boolean hasMoved, inCheck;
+    public int direction, x, y;
     String color, type;
-    int x, y, position;
-    boolean hasMoved;
     double startDragX, startDragY, currX, currY;
-    public int direction;
+    Coordinate coordinate;
     HashSet<Integer> possibleMoves;
-    HashMap<Integer, Square> squaresMap = ChessBoard.getSquaresMap();
+    HashMap<Coordinate, Square> squaresMap = ChessBoard.getSquaresMap();
     ArrayList<Square> squares = ChessBoard.getSquares();
     ArrayList<Square> highLightedSquares;
     Image image;
-
-
 
     public Piece(String color, int x, int y, int startPos){
         this.color = color;
         this.x = x;
         this.y = y;
-        this.position = startPos;
+        this.coordinate = new Coordinate(x, y);
         this.hasMoved = false;
         this.possibleMoves = new HashSet<>();
         this.direction = Objects.equals(this.color, "white") ? 1 : -1;
         this.pieceInteraction();
     }
 
-    public int getPosition(){
-        return this.position;
-    }
-
+    /**
+     * Defines image for individual piece created in ChessBoard.cls
+     * */
     public Image setPiece(Image image){
         this.setImage(image);
         return image;
@@ -49,6 +49,9 @@ public class Piece extends ImageView {
         this.image = this.setPiece(new Image(Objects.requireNonNull(App.class.getResourceAsStream(resourceStream))));
     }
 
+    /**
+     * Control the click-and-drag feature for moving chess pieces
+     * */
     public void pieceInteraction(){
         // Selecting Piece
         this.setOnMousePressed(mouseEvent -> {
@@ -57,8 +60,6 @@ public class Piece extends ImageView {
             startDragY = mouseEvent.getSceneY();
             this.getParent().setViewOrder(-1);
             moves();
-            System.out.println("Piece: " + this.type + " Moved?: " + this.hasMoved + " Position: " + this.position);
-            System.out.println("Possible moves: " + this.possibleMoves);
             highlightMoves(possibleMoves);
             mouseEvent.consume();
         });
@@ -75,36 +76,46 @@ public class Piece extends ImageView {
 
         this.setOnMouseReleased(mouseEvent -> {
             Node node = mouseEvent.getPickResult().getIntersectedNode();
-            boolean isSuccessfulMove = checkSuccessfulMove(node);
-            if(isSuccessfulMove){
-                this.hasMoved = true;
-                this.resetSquares();
-            } else {
-                this.resetSquares();
-            }
+            checkSuccessfulMove(node);
             this.setMouseTransparent(false);
             this.possibleMoves = new HashSet<>();
             mouseEvent.consume();
         });
     }
 
+    /**
+     * Find list of possible moves - super for other piece objects with specific moves
+     * Confirms if player is in check and acts accordingly
+     * */
     public void moves(){
-        //TODO: should not go off edge of board
         getPossibleMoves();
+        if(inCheck){
+            boolean pieceProtectKing = protectOnly();
+            if(!pieceProtectKing || !Objects.equals(this.type, "King")){
+                this.possibleMoves = new HashSet<>();
+            }
+        }
+    }
+
+    private boolean protectOnly() {
+        // Need to check if piece can protect king by intersecting path of attacker
+        return true;
     }
 
     public void getPossibleMoves() {}
 
-    public boolean checkSuccessfulMove(Node node){
+    /**
+     * Compares selected move with possible moves for movement control
+     * */
+    public void checkSuccessfulMove(Node node){
         if(!(node instanceof Square)){
-            return false;
+            return;
         }
         Square targetSquare = (Square) node;
         Square prevSquare = (Square) this.getParent();
         int target = targetSquare.getName();
 
         for(int move : possibleMoves) {
-            // TODO: Only job here is to move square if it's in the list of successful moves
             if (target == move){
 
                 //Prep target square
@@ -116,21 +127,23 @@ public class Piece extends ImageView {
                 //Move in here
                 targetSquare.getChildren().add(this);
                 targetSquare.occupied = true;
+                this.coordinate = new Coordinate(targetSquare.x, targetSquare.y);
                 this.x = targetSquare.x;
                 this.y = targetSquare.y;
-                this.position = target;
 
                 //Update prev square
                 prevSquare.occupied = false;
                 prevSquare.getChildren().clear();
 
                 this.hasMoved = true;
-                return true;
             }
         }
-        return false;
+        this.resetSquares();
     }
 
+    /**
+     * Set highlighting on moves that are valid - allowing for movement of those pieces
+     * */
     public void highlightMoves(HashSet<Integer> possibleMoves){
         Color highlightColor = Color.rgb(144, 238, 144);
         highLightedSquares = new ArrayList<>();
@@ -159,5 +172,16 @@ public class Piece extends ImageView {
             }
             square.setEffect(null);
         }
+    }
+
+    /**
+     * Super method verifying if piece can be captured or is the players own piece
+     * */
+    boolean occupiedByEnemy(Square square){
+        if(square.occupied){
+            Piece piece = (Piece) square.getChildren().get(0);
+            return piece.direction != this.direction;
+        }
+        return true;
     }
 }

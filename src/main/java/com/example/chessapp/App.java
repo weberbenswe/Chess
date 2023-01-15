@@ -12,8 +12,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * Init Chess Program and load board for play, also allows user to select
- * options menu
+ * Init Chess Program and load board for play
  */
 public class App extends Application {
 
@@ -26,7 +25,7 @@ public class App extends Application {
         Scene scene = new Scene(root);
 
         stage.getIcons().add(getIcon());
-        stage.setTitle("Home Chess");
+        stage.setTitle("Chess");
 
         stage.setScene(scene);
         stage.show();
@@ -34,15 +33,6 @@ public class App extends Application {
 
     public static Image getIcon() {
             return new Image(Objects.requireNonNull(App.class.getResourceAsStream("/images/programIcon.png")));
-    }
-
-    static void setRoot(String fxml) throws IOException {
-        scene.setRoot(loadFXML(fxml));
-    }
-
-    private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
-        return fxmlLoader.load();
     }
 
     public static void main(String[] args) {
