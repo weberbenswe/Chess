@@ -27,7 +27,6 @@ public class AppTest {
                         success = true;
                         return;
                     }
-                    // This is not the exception we are looking for so log it.
                     Logger.getLogger(AppTest.class.getName()).log(Level.SEVERE, null, t);
                 }
             }
