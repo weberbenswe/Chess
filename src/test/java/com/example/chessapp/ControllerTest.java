@@ -8,6 +8,6 @@ class ControllerTest {
 
     @Test
     void initialize() {
-ssasa
-    }sssss
+
+    }
 }
