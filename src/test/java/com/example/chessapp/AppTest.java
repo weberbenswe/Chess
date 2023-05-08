@@ -22,6 +22,6 @@ public class AppTest extends ApplicationTest {
 
     @Test
     public void testStart() {
-        verifyThat("#root", hasChildren(1));
+        verifyThat("#root", hasChildren(1, ".root"));
     }
 }
