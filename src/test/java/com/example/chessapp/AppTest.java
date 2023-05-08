@@ -1,53 +1,27 @@
 package com.example.chessapp;
 
-import javafx.application.Application;
-import org.junit.jupiter.api.Test;
+import javafx.stage.Stage;
+import org.junit.Test;
+import org.testfx.framework.junit.ApplicationTest;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import static org.testfx.api.FxAssert.verifyThat;
+import static org.testfx.matcher.base.NodeMatchers.hasChildren;
 
 
-public class AppTest {
+public class AppTest extends ApplicationTest {
 
     private volatile boolean success = false;
 
     /**
      * Test that a JavaFX application launches.
      */
-    @Test
-    public void testMain() {
-        Thread thread = new Thread() { // Wrapper thread.
-            @Override
-            public void run() {
-                try {
-                    Application.launch(App.class);
-                    success = true;
-                } catch(Throwable t) {
-                    if(t.getCause() != null && t.getCause().getClass().equals(InterruptedException.class)) {
-                        success = true;
-                        return;
-                    }
-                    Logger.getLogger(AppTest.class.getName()).log(Level.SEVERE, null, t);
-                }
-            }
-        };
-        thread.setDaemon(true);
-        thread.start();
-        try {
-            Thread.sleep(3000);
-        } catch(InterruptedException ignored) {
-
-        }
-        thread.interrupt();
-        try {
-            thread.join(1);
-        } catch(InterruptedException ignored) {
-        }
-        assert(success);
+    @Override
+    public void start(Stage stage) throws Exception {
+        new App().start(stage);
     }
 
     @Test
-    public void testLoadFXML(){
-
+    public void testStart() {
+        verifyThat("#root", hasChildren(1));
     }
 }
