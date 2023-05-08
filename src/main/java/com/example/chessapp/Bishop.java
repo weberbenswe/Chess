@@ -10,6 +10,7 @@ public class Bishop extends Piece{
 
     @Override
     public void getPossibleMoves(){
+        int[][] directions = {{1, 1}, {1, -1}, {-1, 1}, {-1, -1}};
 
         for(int x=this.x+1, y=this.y+1; x < 8 && y < 8; x++, y++){
             Coordinate downRight = new Coordinate(x, y);
