@@ -23,7 +23,7 @@ public class Bishop extends Piece{
             } else if(!square.occupied){
                 possibleMoves.add(square.getName());
             } else if(square.occupied && occupiedByEnemy(square)){
-                possibleMoves.add(square.getName()); 
+                possibleMoves.add(square.getName());  
                 break;
             }
         }
